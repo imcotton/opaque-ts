@@ -3,9 +3,11 @@
 // Licensed under the BSD-3-Clause license found in the LICENSE file or
 // at https://opensource.org/licenses/BSD-3-Clause
 
-import { ctEqual, joinAll } from './util.js'
+import { ctEqual, joinAll, shim_webcrypto as alias } from './util.js'
 
 import { scrypt } from '@noble/hashes/lib/scrypt'
+
+const { crypto = await alias('node:crypto', 'webcrypto') } = globalThis // shim while Node.js >=15.0.0 <19.0.0
 
 export interface PrngFn {
     random(numBytes: number): number[]

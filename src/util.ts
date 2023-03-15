@@ -119,3 +119,18 @@ export function ctEqual(a: Uint8Array, b: Uint8Array): boolean {
     }
     return c === 0
 }
+
+export async function shim_webcrypto(_name: 'node:crypto', _path: 'webcrypto'): Promise<Crypto> {
+    const dummy: Crypto = {
+        getRandomValues() {
+            throw new Error('webcrypto not available')
+        }
+    } as never
+
+    try {
+        const { webcrypto = dummy } = await import('node:crypto')
+        return webcrypto as never
+    } catch {
+        return dummy
+    }
+}
